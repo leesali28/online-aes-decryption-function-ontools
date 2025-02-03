@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES Encryption/Decryption Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            text-align: center;
+            color: #333;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button.encrypt-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        button.encrypt-btn:hover {
+            background-color: #218838;
+        }
+        button.decrypt-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        button.decrypt-btn:hover {
+            background-color: #bd2130;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            word-wrap: break-word;
+            display: none;
+            color: #333;
+        }
+        .copy-btn {
+            float: right;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        .mini-article {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .mini-article h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .faq-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+        }
+        .faq-question {
+            font-weight: bold;
+            margin-bottom: 5px;
+            cursor: pointer;
+            color: #333;
+        }
+        .faq-answer {
+            display: none;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>AES Encryption/Decryption Tool</h1>
+    
+    <label for="inputText">Input Text:</label>
+    <textarea id="inputText" rows="4" placeholder="Enter text here..."></textarea>
+
+    <label for="encryptionKey">Encryption/Decryption Key:</label>
+    <input type="text" id="encryptionKey" placeholder="Enter key">
+
+    <button class="encrypt-btn" onclick="encryptAES()">Encrypt</button>
+    <button class="decrypt-btn" onclick="decryptAES()">Decrypt</button>
+
+    <div id="result" class="result">
+        <strong>Output:</strong>
+        <p id="outputText"></p>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <div class="mini-article">
+        <h3>About AES Encryption</h3>
+        <p>
+            AES (Advanced Encryption Standard) is a widely used encryption algorithm that ensures secure data transmission. 
+            It operates on fixed block sizes of 128 bits and supports key lengths of 128, 192, or 256 bits.
+        </p>
+        <p>
+            This tool allows you to encrypt and decrypt text using AES. Simply enter your text and a secret key, 
+            then click "Encrypt" or "Decrypt" to process the data. Always keep your encryption key safe!
+        </p>
+    </div>
+
+    <div class="faq-section">
+        <h3>Frequently Asked Questions (FAQ)</h3>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">What is AES encryption?</div>
+            <div class="faq-answer">
+                AES (Advanced Encryption Standard) is a symmetric encryption algorithm used to secure sensitive data. 
+                It uses a fixed block size of 128 bits and supports key sizes of 128, 192, or 256 bits.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">How do I use this tool?</div>
+            <div class="faq-answer">
+                Enter your text in the "Input Text" field and a secret key in the "Encryption/Decryption Key" field. 
+                Click "Encrypt" to encrypt the text or "Decrypt" to decrypt it. The result will appear below.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">Why is my decryption failing?</div>
+            <div class="faq-answer">
+                Decryption may fail if the encrypted text or key is incorrect. Ensure that the key matches the one used 
+                during encryption and that the encrypted text is not altered.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">Is this tool secure?</div>
+            <div class="faq-answer">
+                This tool uses the CryptoJS library for AES encryption and decryption. While it is secure for educational 
+                purposes, avoid using it for highly sensitive data without proper security measures.
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2023 AES Tool | Made with ❤️
+    </div>
+</div>
+
+<!-- JSON-LD Schema.org Markup -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AES Encryption/Decryption Tool",
+    "url": "https://example.com/aes-tool", <!-- Replace with your actual URL -->
+    "description": "A user-friendly online tool to encrypt and decrypt text using the AES algorithm.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript and modern web browser",
+    "softwareVersion": "1.0",
+    "author": {
+        "@type": "Person",
+        "name": "Your Name", <!-- Replace with your name -->
+        "url": "https://example.com" <!-- Replace with your website -->
+    },
+    "provider": {
+        "@type": "Organization",
+        "name": "Your Organization", <!-- Replace with your organization name -->
+        "url": "https://example.com" <!-- Replace with your organization's website -->
+    },
+    "featureList": [
+        "Encrypt text using AES",
+        "Decrypt text using AES",
+        "User-friendly interface",
+        "Copy-to-clipboard functionality"
+    ]
+}
+</script>
+
+<!-- Include CryptoJS library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script>
+    function encryptAES() {
+        const inputText = document.getElementById('inputText').value.trim();
+        const encryptionKey = document.getElementById('encryptionKey').value.trim();
+
+        if (!inputText || !encryptionKey) {
+            alert("Please enter both text and key.");
+            return;
+        }
+
+        try {
+            const encryptedText = CryptoJS.AES.encrypt(inputText, encryptionKey).toString();
+            document.getElementById('outputText').innerText = encryptedText;
+            document.getElementById('result').style.display = 'block';
+        } catch (error) {
+            alert("An error occurred during encryption.");
+        }
+    }
+
+    function decryptAES() {
+        const encryptedText = document.getElementById('inputText').value.trim();
+        const decryptionKey = document.getElementById('encryptionKey').value.trim();
+
+        if (!encryptedText || !decryptionKey) {
+            alert("Please enter both encrypted text and key.");
+            return;
+        }
+
+        try {
+            const bytes = CryptoJS.AES.decrypt(encryptedText, decryptionKey);
+            const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+
+            if (decryptedText) {
+                document.getElementById('outputText').innerText = decryptedText;
+                document.getElementById('result').style.display = 'block';
+            } else {
+                alert("Decryption failed. Please check the key or encrypted text.");
+            }
+        } catch (error) {
+            alert("An error occurred during decryption.");
+        }
+    }
+
+    function copyToClipboard() {
+        const outputText = document.getElementById('outputText').innerText;
+        navigator.clipboard.writeText(outputText).then(() => {
+            alert("Copied to clipboard!");
+        }).catch(err => {
+            alert("Failed to copy text.");
+        });
+    }
+
+    function toggleFAQ(element) {
+        const answer = element.nextElementSibling;
+        if (answer.style.display === "block") {
+            answer.style.display = "none";
+        } else {
+            answer.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
